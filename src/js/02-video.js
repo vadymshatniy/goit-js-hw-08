@@ -1,12 +1,15 @@
 const iframe = document.querySelector('iframe');
     const player = new Vimeo.Player(iframe);
+const video = document.getElementById("vimeo-player");
+
 
     player.on('play', function() {
-        localStorage.getItem('videoplayer-current-time', currentTime);
+        localStorage.setItem('videoplayer-current-time', JSON.stringify(video.currentTime));
+        console.log(JSON.stringify(video.currentTime));
     });
 
     player.getVideoTitle().then(function(currentTime) {
-        localStorage.setItem('videoplayer-current-time', currentTime);
+        localStorage.getItem('videoplayer-current-time');
     });
 
 
