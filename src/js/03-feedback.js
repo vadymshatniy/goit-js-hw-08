@@ -1,27 +1,31 @@
 import throttle from "lodash.throttle";
 
 // Призначення елементів DOM у змінні:
+const form = document.querySelector('.feedback-form');
 const fieldEmail = document.querySelector('input');
 const fieldMessage = document.querySelector('textarea');
 const button = document.querySelector("button");
 
-// Запис даних з полів email і message у local Storage:
+
+// Запис даних у local Storage:
 function setDatasToLocal() {
      localStorage.setItem('feedback-form-state', JSON.stringify({
         email: fieldEmail.value,
         message: fieldMessage.value,
      }))
 }
-fieldEmail.addEventListener('input', throttle(() => {
-    setDatasToLocal();
-}, 500));
-fieldMessage.addEventListener('input', throttle(() => {
+form.addEventListener('input', throttle(() => {
     setDatasToLocal();
 }, 500));
 
-// Заповнення полів email і message даними з local Storage під час перезавантаження сторінки
-// (з використанням функцій, які запобігають виникненню помилок після очищення localStorage):
-const localDatas = JSON.parse(localStorage.getItem('feedback-form-state'));
+
+// Заповнення полів email і message даними з local Storage під час перезавантаження сторінки:
+const localDatas = JSON.parse(localStorage.getItem('feedback-form-state'))
+// const localEmail = localDatas.email || 0;
+// fieldEmail.value = localEmail;
+// const localMessage = localDatas.message || 0;
+// fieldMessage.value = localMessage;
+
 const localEmail = setEmailFromLocal();
 function setEmailFromLocal() {
     if (localDatas !== null) {
@@ -30,6 +34,7 @@ function setEmailFromLocal() {
         return " ";
     }
 }
+fieldEmail.value = localEmail;
 const localMessage = setMessageFromLocal();
 function setMessageFromLocal() {
     if (localDatas !== null) {
@@ -38,16 +43,14 @@ function setMessageFromLocal() {
         return " ";
     }
 }
-fieldEmail.value = localEmail;
 fieldMessage.value = localMessage;
 
 // Дії під час submit:
-button.addEventListener('click', () => {
-    console.log({
-        email: fieldEmail.value,
-        message: fieldMessage.value,
-    });
-    localStorage.clear();
-    fieldEmail.value = " ";
-    fieldMessage.value = " ";
-});
+form.addEventListener('submit', onFormSubmit); 
+function onFormSubmit(event) {
+const localDatas = JSON.parse(localStorage.getItem('feedback-form-state'))
+event.preventDefault();
+console.log(localDatas);
+localStorage.clear();
+form.reset();
+};
